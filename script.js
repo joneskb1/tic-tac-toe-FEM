@@ -111,6 +111,7 @@ function cpuMark() {
     }, 250)
 
   } else {
+    img.src = `assets/icon-${currentPlayer}-marker.svg`
     switchPlayers();
   }
 

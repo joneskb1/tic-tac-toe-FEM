@@ -1,4 +1,4 @@
-// working on active marks
+
 const gameBoardBoxes = [...document.querySelectorAll(".game-board-box")];
 const pickMarkContainer = document.querySelector(".pick-x-o-container");
 const newGameContainer = document.querySelector(".new-game-container");
@@ -74,6 +74,7 @@ function cpuMark() {
   if (winningPlayer) return;
   if (isTied) return;
   if (gameType === "cpu" && currentPlayer === player1) return;
+
   const availableBoxes = getEmptyBoxes();
   const randomBoxIndex = Math.floor(Math.random() * availableBoxes.length);
   const randomBoxNum = availableBoxes[randomBoxIndex];
@@ -83,23 +84,36 @@ function cpuMark() {
       Number.parseInt(randomBoxNum, 10)
     );
   });
+
   createMarker(randomBox);
   storeData(randomBox);
   const win = checkWinner();
   if (!win) checkTie();
+
   gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "auto"));
+
   const img = randomBox.querySelector("img");
   if (isTied) img.src = `assets/icon-${currentPlayer}-marker.svg`
-  setTimeout(()=>   {
-    if (winningPlayer) {
-      img.src = `assets/icon-${currentPlayer}-outline.svg`
+  const isHoverableDevice = window.matchMedia(
+    "(hover: hover) and (pointer: fine)"
+  );
 
-    } else{
-      img.src = `assets/icon-${currentPlayer}-marker.svg`
-    }
+  if (isHoverableDevice.matches)   {
+    setTimeout(()=>   {
+      if (winningPlayer) {
+        img.src = `assets/icon-${currentPlayer}-outline.svg`
+  
+      } else{
+        img.src = `assets/icon-${currentPlayer}-marker.svg`
+      }
+      switchPlayers();
+  
+    }, 250)
+
+  } else {
     switchPlayers();
+  }
 
-  }, 250)
 }
 
 function setScoreNames() {
@@ -253,32 +267,12 @@ function createMarker(box) {
  
 }
 
-function addMarker(e) {
-  const currBox = e.target.closest("div") ?? e.target;
 
-  // guards
-  if (main.classList.contains("filter")) return;
-  const checkData =
-    currBox.dataset.mark === "x" || currBox.dataset.mark === "o";
-  if (checkData) return;
-  if (gameType === "cpu" && currentPlayer !== player1) return;
-
-  // createMarker(currBox);
-  storeData(currBox);
-  const win = checkWinner();
-  if (!win) checkTie();
-  switchPlayers();
-}
-
-// gameBoardBoxes.forEach((box) => box.addEventListener("click", addMarker));
-
-function resetGame() {
+function resetHelper() {
   main.classList.remove("filter");
   popUpContainer.classList.add("hide");
   winningPlayer = null;
   winningPosition = null;
-  currentPlayer = "x";
-  turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
   gameBoardBoxes.forEach((box) => {
     box.innerHTML = "";
     box.style.backgroundColor = "#1f3641";
@@ -291,6 +285,13 @@ function resetGame() {
   player1ScoreText.textContent = 0;
   player2ScoreText.textContent = 0;
   tieScoreText.textContent = 0;
+}
+
+
+function resetGame() {
+  currentPlayer = "x";
+  turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
+  resetHelper();
   checkCpuTurn();
 }
 
@@ -347,23 +348,7 @@ function goToHome() {
   gameType = null;
   player1 = null;
   player2 = null;
-  // resetGame();
-  main.classList.remove("filter");
-  popUpContainer.classList.add("hide");
-  winningPlayer = null;
-  winningPosition = null;
-  gameBoardBoxes.forEach((box) => {
-    box.innerHTML = "";
-    box.style.backgroundColor = "#1f3641";
-    box.dataset.mark = null;
-  });
-  player1Score = 0;
-  player2Score = 0;
-  tieScore = 0;
-  isTied = null;
-  player1ScoreText.textContent = 0;
-  player2ScoreText.textContent = 0;
-  tieScoreText.textContent = 0;
+  resetHelper();
   resetToggle();
 }
 
@@ -419,7 +404,6 @@ pickOcontainer.addEventListener("mouseup", deactivePickMark);
 
 
 function outlineMarkActive(e) {
-  console.log("outline called")
   const currBox = e.target;
 
   if (main.classList.contains("filter")) return;
@@ -455,7 +439,5 @@ function solidMark(e) {
   img.src = `assets/icon-${mark}-marker.svg`;
 
 }
-
-
-gameBoardBoxes.forEach((box) => box.addEventListener("mouseup", solidMark));
 gameBoardBoxes.forEach((box) => box.addEventListener("mousedown", outlineMarkActive));
+gameBoardBoxes.forEach((box) => box.addEventListener("mouseup", solidMark));

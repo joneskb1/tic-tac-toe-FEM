@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/favicon-32x32.png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+
+    <title>Frontend Mentor | Tic Tac Toe</title>
+  </head>
+  <body>
+    <main class="main-container">
+      <!-- New game menu start -->
+      <div class="new-game-container">
+        <img class="logo" src="assets/logo.svg" alt="logo" />
+        <div class="pick-mark-container">
+          <h4 class="pick-mark-h4">PICK PLAYER 1'S MARK</h4>
+          <div class="pick-x-o-container">
+            <div class="pick-x-container">
+              <img
+                class="pick-x-img"
+                data-mark="x"
+                src="assets/icon-x-gray.svg"
+                alt="X"
+              />
+            </div>
+            <div class= "pick-o-container selected-mark">
+              <img
+                class="pick-o-img pick-o-img-active"
+                src="assets/icon-o-gray.svg"
+                alt="O"
+                data-mark="o"
+              />
+            </div>
+          </div>
+          <p class="remember-text">REMEMBER: X GOES FIRST</p>
+        </div>
+
+        <button class="btn btn-cpu btn-game-type" data-game-type="cpu">
+          NEW GAME (VS CPU)
+        </button>
+        <button class="btn btn-player btn-game-type" data-game-type="human">
+          NEW GAME (VS PLAYER)
+        </button>
+      </div>
+      <!-- Game board start -->
+      <div class="game-container hide">
+        <div class="game-header">
+          <img class="logo logo-game" src="assets/logo.svg" alt="logo" />
+          <div class="turn-container">
+            <img class="turn-img" src="assets/icon-x-gray.svg" alt="turn img" />
+            <p class="turn-text">TURN</p>
+          </div>
+          <div class="reset-container">
+            <img
+              class="reset-img"
+              src="assets/icon-restart.svg"
+              alt="reset img"
+            />
+          </div>
+        </div>
+        <div class="game-board-container">
+          <div class="game-board-box" data-box-num="0"></div>
+          <div class="game-board-box" data-box-num="1"></div>
+          <div class="game-board-box" data-box-num="2"></div>
+          <div class="game-board-box" data-box-num="3"></div>
+          <div class="game-board-box" data-box-num="4"></div>
+          <div class="game-board-box" data-box-num="5"></div>
+          <div class="game-board-box" data-box-num="6"></div>
+          <div class="game-board-box" data-box-num="7"></div>
+          <div class="game-board-box" data-box-num="8"></div>
+        </div>
+        <div class="score-container">
+          <div class="score-item you-score">
+            <p class="score-text you-score-text">X (P1)</p>
+            <h3 class="player1-score-num">0</h3>
+          </div>
+          <div class="score-item ties-score">
+            <p class="score-text ties-score-text">TIES</p>
+            <h3 class="ties-score-num">0</h3>
+          </div>
+          <div class="score-item others-score">
+            <p class="score-text others-score-text">O (P2)</p>
+            <h3 class="player2-score-num">0</h3>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- popups  -->
+    <section class="popup-container hide">
+      <!-- winner -->
+      <div class="winning-text-container">
+        <p class="winning-player-text">PLAYER 2 WINS!</p>
+        <div class="winning-mark-round-container">
+          <img
+            class="winning-mark-img"
+            src="assets/icon-x-marker.svg"
+            alt="players mark"
+          />
+          <h2 class="winning-round-text">TAKES THE ROUND</h2>
+        </div>
+        <button class="quit-btn" data-name="quit">QUIT</button>
+        <button class="round-btn">NEXT ROUND</button>
+      </div>
+      <!-- tied -->
+      <div class="tied-container">
+        <h2 class="tied-restart-text round-text">ROUND TIED</h2>
+        <button class="quit-btn" data-name="quit">QUIT</button>
+        <button class="round-btn">NEXT ROUND</button>
+      </div>
+      <!-- restart -->
+      <div class="restart-container">
+        <h2 class="tied-restart-text restart-text">RESTART GAME?</h2>
+        <button class="cancel-btn">NO, CANCEL</button>
+        <button class="restart-btn" data-name="restart">YES, RESTART</button>
+      </div>
+    </section>
+  </body>
+</html>

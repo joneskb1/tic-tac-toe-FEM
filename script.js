@@ -111,7 +111,11 @@ function cpuMark() {
     }, 250)
 
   } else {
-    img.src = `assets/icon-${currentPlayer}-marker.svg`
+    if (winningPlayer) {
+      img.src = `assets/icon-${currentPlayer}-outline.svg`
+    }  else {
+      img.src = `assets/icon-${currentPlayer}-marker.svg`
+    }
     switchPlayers();
   }
 

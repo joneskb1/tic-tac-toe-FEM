@@ -18,6 +18,11 @@
   font-size: 14px;
 }
 
+.attribution, .attribution a {
+  text-align: center;
+  color: white;
+}
+
 button {
   color: #1a2a33;
 }

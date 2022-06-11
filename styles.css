@@ -111,39 +111,25 @@ h4 {
 .pick-x-container, .pick-o-container {
   width: 132px;
   height: 54px;
-  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  text-align: center;
   background: none;
-
 }
 
 
 .selected-mark {
-  margin: 0 auto;
   background: var(--dark-gray);
-  width: 132px;
-  height: 54px;
-  border-radius: 10px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .pick-x-img-active {
   content: url("assets/icon-x-navy.svg");
-  width: 32px;
-  height: 32px;
+
 } 
 
 .pick-o-img-active {
   content: url("assets/icon-o-navy.svg");
-  width: 32px;
-  height: 32px;
 }
 
 

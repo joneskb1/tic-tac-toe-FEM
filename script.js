@@ -90,6 +90,7 @@ function cpuMark() {
   const win = checkWinner();
   if (!win) checkTie();
 
+  // add click events back to boxes
   gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "auto"));
 
   const img = randomBox.querySelector("img");
@@ -138,18 +139,23 @@ function setScoreNames() {
 }
 
 function setGameType(e) {
-  // if player 1 isn't selected default to o
+  // if player 1 isn't selected default to "o"
   if (!player1) {
     player1 = "o";
     player2 = "x";
     currentPlayer = player2;
-  }
+  } 
 
   gameType = e.target.dataset.gameType;
+  //added this line
+  turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
 
   if (gameType === "cpu" && player1 === "o") {
     cpuMark();
+  } else {
+    gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "auto"));
   }
+
   newGameContainer.classList.add("hide");
   gameContainer.classList.remove("hide");
   setScoreNames();
@@ -162,7 +168,8 @@ function setPlayers(e) {
   const img = e.target.querySelector("img") ?? e.target;
   player1 = img.dataset.mark;
   player2 = player1 === "x" ? "o" : "x";
-  currentPlayer = player1 === "x" ? player1 : player2;
+  // currentPlayer = player1 === "x" ? player1 : player2;
+  currentPlayer =  "x";
 }
 
 pickMarkContainer.addEventListener("click", setPlayers);
@@ -340,6 +347,7 @@ function checkCpuTurn() {
   if (winningPlayer) return;
   if (isTied) return;
   if (gameType === "cpu" && currentPlayer !== player1) {
+    // disables click events for the boxes
     gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "none"));
     setTimeout(cpuMark, 1000);
   }
@@ -350,6 +358,9 @@ gameBoardBoxes.forEach((box) => box.addEventListener("click", checkCpuTurn));
 function goToHome() {
   newGameContainer.classList.remove("hide");
   gameContainer.classList.add("hide");
+  // added 2 lines 
+  currentPlayer = "x";
+  turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
   gameType = null;
   player1 = null;
   player2 = null;

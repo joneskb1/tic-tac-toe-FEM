@@ -41,11 +41,12 @@ let gameType;
 let isTied;
 
 function checkTie() {
-  const tie = gameBoardBoxes.filter((box) => {
+  // get all boxes that are marked
+  const markedBoxes = gameBoardBoxes.filter((box) => {
     return box.dataset.mark === "x" || box.dataset.mark === "o";
   });
 
-  if (tie.length === 9) {
+  if (markedBoxes.length === 9) {
     tieScore += 1;
     tieScoreText.textContent = tieScore;
     // show pop up
@@ -60,6 +61,7 @@ function checkTie() {
 
 function getEmptyBoxes() {
   const emptyBoxNum = [];
+  // get the box numbers of empty boxes
   gameBoardBoxes.map((box) => {
     if (!box.dataset.mark || box.dataset.mark === "null") {
       return emptyBoxNum.push(box.dataset.boxNum);
@@ -94,11 +96,15 @@ function cpuMark() {
   gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "auto"));
 
   const img = randomBox.querySelector("img");
+  // fill in marker if game is tied 
   if (isTied) img.src = `assets/icon-${currentPlayer}-marker.svg`
+
+
   const isHoverableDevice = window.matchMedia(
     "(hover: hover) and (pointer: fine)"
   );
 
+  // if on desktop setTimeout, fill in proper color for marker
   if (isHoverableDevice.matches)   {
     setTimeout(()=>   {
       if (winningPlayer) {
@@ -110,7 +116,7 @@ function cpuMark() {
       switchPlayers();
   
     }, 250)
-
+    // don't setTimeout on mobile, fill proper color for marker
   } else {
     if (winningPlayer) {
       img.src = `assets/icon-${currentPlayer}-outline.svg`
@@ -147,28 +153,30 @@ function setGameType(e) {
   } 
 
   gameType = e.target.dataset.gameType;
-  //added this line
+
   turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
 
   if (gameType === "cpu" && player1 === "o") {
     cpuMark();
   } else {
+    // add click events back on boxes
     gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "auto"));
   }
 
+  // show board 
   newGameContainer.classList.add("hide");
   gameContainer.classList.remove("hide");
-  setScoreNames();
 
+  setScoreNames();
 }
 
 gameTypeBtns.forEach((btn) => btn.addEventListener("click", setGameType));
 
 function setPlayers(e) {
+  // get either x or o img dataset mark 
   const img = e.target.querySelector("img") ?? e.target;
   player1 = img.dataset.mark;
   player2 = player1 === "x" ? "o" : "x";
-  // currentPlayer = player1 === "x" ? player1 : player2;
   currentPlayer =  "x";
 }
 
@@ -184,7 +192,7 @@ function storeData(currBox) {
 }
 
 function checkWinner() {
-  // all possible wins
+  // all possible wins - box nums
   const allWins = {
     top: [0, 1, 2],
     middleRow: [3, 4, 5],
@@ -196,7 +204,7 @@ function checkWinner() {
     forward: [2, 4, 6],
   };
 
-  // get all mark positions
+  // get all box nums that are marked 
   let markArr = [];
   gameBoardBoxes.map((box) => {
     if (box.dataset.mark === currentPlayer) {
@@ -206,6 +214,7 @@ function checkWinner() {
 
   // check for winner
   for (const key in allWins) {
+    // check if markArr contains a win
     const win = allWins[key].every((el) => {
       return markArr.includes(el);
     });
@@ -248,7 +257,7 @@ function checkWinner() {
       } else {
         player2Score += 1;
       }
-
+      // show score
       if (player1 === "o") {
         player1ScoreText.textContent = player2Score;
         player2ScoreText.textContent = player1Score;
@@ -265,7 +274,6 @@ function checkWinner() {
 function createMarker(box) {
   // create img, size img, attach img
   const img = document.createElement("img");
-  // img.src = `assets/icon-${currentPlayer}-marker.svg`;
   img.src = `assets/icon-${currentPlayer}-outline.svg`;
   const viewWidth = window.innerWidth;
   if (viewWidth < 800) {
@@ -285,6 +293,9 @@ function resetHelper() {
   popUpContainer.classList.add("hide");
   winningPlayer = null;
   winningPosition = null;
+  currentPlayer = "x";
+  turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
+  // reset boxes 
   gameBoardBoxes.forEach((box) => {
     box.innerHTML = "";
     box.style.backgroundColor = "#1f3641";
@@ -301,8 +312,6 @@ function resetHelper() {
 
 
 function resetGame() {
-  currentPlayer = "x";
-  turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
   resetHelper();
   checkCpuTurn();
 }
@@ -318,7 +327,6 @@ function resetPopUp() {
 function cancelReset() {
   main.classList.remove("filter");
   popUpContainer.classList.add("hide");
-  return;
 }
 
 function nextRound() {
@@ -328,6 +336,7 @@ function nextRound() {
   winningPosition = null;
   currentPlayer = "x";
   turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
+  // empty boxes
   gameBoardBoxes.forEach((box) => {
     box.innerHTML = "";
     box.style.backgroundColor = "#1f3641";
@@ -347,7 +356,7 @@ function checkCpuTurn() {
   if (winningPlayer) return;
   if (isTied) return;
   if (gameType === "cpu" && currentPlayer !== player1) {
-    // disables click events for the boxes
+    // disables click events for the boxes while cpu marks
     gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "none"));
     setTimeout(cpuMark, 1000);
   }
@@ -358,9 +367,6 @@ gameBoardBoxes.forEach((box) => box.addEventListener("click", checkCpuTurn));
 function goToHome() {
   newGameContainer.classList.remove("hide");
   gameContainer.classList.add("hide");
-  // added 2 lines 
-  currentPlayer = "x";
-  turnImg.src = `assets/icon-${currentPlayer}-gray.svg`;
   gameType = null;
   player1 = null;
   player2 = null;
@@ -372,8 +378,10 @@ logo.addEventListener("click", goToHome);
 quitBtn.forEach((el) => el.addEventListener("click", goToHome));
 
 function togglePickMark(e) {
+  // get either x or o img dataset mark
   const target = e.target.querySelector("img") ?? e.target;
   const mark = target.dataset.mark;
+  // add light gray background to selected marker & change img color
   if (mark === "x") {
     pickXcontainer.classList.add("selected-mark");
     pickOcontainer.classList.remove("selected-mark");
@@ -388,6 +396,7 @@ function togglePickMark(e) {
 }
 
 function resetToggle() {
+  // default to o selected 
   pickXcontainer.classList.remove("selected-mark");
   pickOcontainer.classList.add("selected-mark");
   pickXimg.classList.remove("pick-x-img-active")
@@ -395,16 +404,20 @@ function resetToggle() {
 }
 
 function activePickMark(e) {
+  // add active background
   const img = e.target.querySelector("img") ?? e.target;
   const div = img.closest("div");
+  // if box is already selected return 
   if (div.classList.contains("selected-mark")) {
     return;
   } else {
+    // change background 
     div.classList.add("pick-mark-active");
   }
 }
 
-function deactivePickMark(e) {
+function deactivatePickMark(e) {
+  // remove active background
   const img = e.target.querySelector("img") ?? e.target;
   const div = img.closest("div");
   div.classList.remove("pick-mark-active");
@@ -415,21 +428,22 @@ pickXcontainer.addEventListener("click", togglePickMark);
 pickOcontainer.addEventListener("click", togglePickMark);
 pickXcontainer.addEventListener("mousedown", activePickMark);
 pickOcontainer.addEventListener("mousedown", activePickMark);
-pickXcontainer.addEventListener("mouseup", deactivePickMark);
-pickOcontainer.addEventListener("mouseup", deactivePickMark);
+pickXcontainer.addEventListener("mouseup", deactivatePickMark);
+pickOcontainer.addEventListener("mouseup", deactivatePickMark);
 
 
 function outlineMarkActive(e) {
   const currBox = e.target;
 
   if (main.classList.contains("filter")) return;
+    // if box is ready marked return
   const checkData =
     currBox.dataset.mark === "x" || currBox.dataset.mark === "o";
   if (checkData) return;
   if (gameType === "cpu" && currentPlayer !== player1) return;
 
-
- const img = document.createElement("img");
+  // create img 
+  const img = document.createElement("img");
   img.src = `assets/icon-${currentPlayer}-outline.svg`;
   const viewWidth = window.innerWidth;
   if (viewWidth < 800) {
@@ -443,11 +457,14 @@ function outlineMarkActive(e) {
   storeData(currBox);
   const win = checkWinner();
   if (!win) checkTie();
+  // don't fill box if tied 
   if (isTied) img.src = `assets/icon-${currentPlayer}-marker.svg`
   switchPlayers();
+
 }
 
 function solidMark(e) {  
+  // if there is a winner don't fill the box
   if (winningPlayer) return;
   const img = e.target.querySelector("img") ?? e.target;
   const box = img.closest("div");

@@ -18,10 +18,16 @@
   font-size: 14px;
 }
 
-.attribution, .attribution a {
-  text-align: center;
-  color: white;
+.attribution a {
+  color: var(--light-gray);
 }
+
+.attribution {
+  padding-top: 1.5rem;
+  text-align: center;
+  color: var(--dark-gray);
+}
+
 
 button {
   color: #1a2a33;
@@ -39,6 +45,7 @@ body {
 main {
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -106,8 +113,6 @@ h4 {
   height: 32px;
 }
 
-
-
 .pick-x-container, .pick-o-container {
   width: 132px;
   height: 54px;
@@ -117,7 +122,6 @@ h4 {
   border-radius: 10px;
   background: none;
 }
-
 
 .selected-mark {
   background: var(--dark-gray);
@@ -131,7 +135,6 @@ h4 {
 .pick-o-img-active {
   content: url("assets/icon-o-navy.svg");
 }
-
 
 .remember-text {
   text-align: center;
@@ -399,6 +402,9 @@ h4 {
   font-size: 16px;
   letter-spacing: 1px;
 }
+
+
+/* desktop */
 
 @media screen and (min-width: 800px) {
   .new-game-container {

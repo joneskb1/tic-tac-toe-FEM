@@ -457,10 +457,9 @@ function outlineMarkActive(e) {
   storeData(currBox);
   const win = checkWinner();
   if (!win) checkTie();
-  // don't fill box if tied 
+  // fill box if tied, solidMark() won't be called
   if (isTied) img.src = `assets/icon-${currentPlayer}-marker.svg`
   switchPlayers();
-
 }
 
 function solidMark(e) {  
@@ -470,8 +469,9 @@ function solidMark(e) {
   const box = img.closest("div");
   const mark = box.dataset.mark
   img.src = `assets/icon-${mark}-marker.svg`;
-
 }
+
+
 gameBoardBoxes.forEach((box) => box.addEventListener("mousedown", outlineMarkActive));
 gameBoardBoxes.forEach((box) => box.addEventListener("mouseup", solidMark));
 

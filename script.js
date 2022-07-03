@@ -474,3 +474,29 @@ function solidMark(e) {
 }
 gameBoardBoxes.forEach((box) => box.addEventListener("mousedown", outlineMarkActive));
 gameBoardBoxes.forEach((box) => box.addEventListener("mouseup", solidMark));
+
+
+
+// change marker sizes when window is resized
+function changeMarkerSize() {
+  const viewWidth = window.innerWidth;
+  if (viewWidth < 800) {
+    gameBoardBoxes.forEach(box => {
+      if(!box.dataset.mark || box.dataset.mark === "null") return;
+      const img = box.querySelector("img");
+      img.style.width = "40px";
+      img.style.height = "40px";
+    })
+
+  } else if (viewWidth > 800) {
+    gameBoardBoxes.forEach(box => {
+      if(!box.dataset.mark || box.dataset.mark === "null") return;
+      const img = box.querySelector("img");
+      img.style.width = "64px";
+      img.style.height = "64px";
+    })
+  }
+}
+
+
+window.addEventListener("resize", changeMarkerSize);

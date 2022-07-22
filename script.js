@@ -77,6 +77,7 @@ function cpuMark() {
   if (isTied) return;
   if (gameType === "cpu" && currentPlayer === player1) return;
 
+
   const availableBoxes = getEmptyBoxes();
   const randomBoxIndex = Math.floor(Math.random() * availableBoxes.length);
   const randomBoxNum = availableBoxes[randomBoxIndex];
@@ -87,45 +88,25 @@ function cpuMark() {
     );
   });
 
-  createMarker(randomBox);
+ 
+  // create img, size img, attach img
+  const img = document.createElement("img");
+  img.src = `assets/icon-${currentPlayer}-marker.svg`;
+  const viewWidth = window.innerWidth;
+  if (viewWidth < 800) {
+    img.style.width = "40px";
+    img.style.height = "40px";
+  } else if (viewWidth > 800) {
+    img.style.width = "64px";
+    img.style.height = "64px";
+  }
   storeData(randomBox);
+  randomBox.appendChild(img);
   const win = checkWinner();
   if (!win) checkTie();
-
   // add click events back to boxes
   gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "auto"));
-
-  const img = randomBox.querySelector("img");
-  // fill in marker if game is tied 
-  if (isTied) img.src = `assets/icon-${currentPlayer}-marker.svg`
-
-
-  const isHoverableDevice = window.matchMedia(
-    "(hover: hover) and (pointer: fine)"
-  );
-
-  // if on desktop setTimeout, fill in proper color for marker
-  if (isHoverableDevice.matches)   {
-    setTimeout(()=>   {
-      if (winningPlayer) {
-        img.src = `assets/icon-${currentPlayer}-outline.svg`
-  
-      } else{
-        img.src = `assets/icon-${currentPlayer}-marker.svg`
-      }
-      switchPlayers();
-  
-    }, 250)
-    // don't setTimeout on mobile, fill proper color for marker
-  } else {
-    if (winningPlayer) {
-      img.src = `assets/icon-${currentPlayer}-outline.svg`
-    }  else {
-      img.src = `assets/icon-${currentPlayer}-marker.svg`
-    }
-    switchPlayers();
-  }
-
+  switchPlayers();
 }
 
 function setScoreNames() {
@@ -271,22 +252,6 @@ function checkWinner() {
   }
 }
 
-function createMarker(box) {
-  // create img, size img, attach img
-  const img = document.createElement("img");
-  img.src = `assets/icon-${currentPlayer}-outline.svg`;
-  const viewWidth = window.innerWidth;
-  if (viewWidth < 800) {
-    img.style.width = "40px";
-    img.style.height = "40px";
-  } else if (viewWidth > 800) {
-    img.style.width = "64px";
-    img.style.height = "64px";
-  }
-  box.appendChild(img);
- 
-}
-
 
 function resetHelper() {
   main.classList.remove("filter");
@@ -310,11 +275,6 @@ function resetHelper() {
   tieScoreText.textContent = 0;
 }
 
-
-function resetGame() {
-  resetHelper();
-  checkCpuTurn();
-}
 
 function resetPopUp() {
   main.classList.add("filter");
@@ -347,22 +307,9 @@ function nextRound() {
 }
 
 resetBtn.addEventListener("click", resetPopUp);
-restartBtn.addEventListener("click", resetGame);
 cancelBtn.addEventListener("click", cancelReset);
 roundBtn.forEach((el) => el.addEventListener("click", nextRound));
 
-function checkCpuTurn() {
-  if (gameType === "human") return;
-  if (winningPlayer) return;
-  if (isTied) return;
-  if (gameType === "cpu" && currentPlayer !== player1) {
-    // disables click events for the boxes while cpu marks
-    gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "none"));
-    setTimeout(cpuMark, 1000);
-  }
-}
-
-gameBoardBoxes.forEach((box) => box.addEventListener("click", checkCpuTurn));
 
 function goToHome() {
   newGameContainer.classList.remove("hide");
@@ -376,8 +323,12 @@ function goToHome() {
 
 logo.addEventListener("click", goToHome);
 quitBtn.forEach((el) => el.addEventListener("click", goToHome));
+restartBtn.addEventListener("click", goToHome);
+
 
 function togglePickMark(e) {
+  //remove hover/active state
+  deactivatePickMark(e);
   // get either x or o img dataset mark
   const target = e.target.querySelector("img") ?? e.target;
   const mark = target.dataset.mark;
@@ -426,25 +377,46 @@ function deactivatePickMark(e) {
 
 pickXcontainer.addEventListener("click", togglePickMark);
 pickOcontainer.addEventListener("click", togglePickMark);
-pickXcontainer.addEventListener("mousedown", activePickMark);
-pickOcontainer.addEventListener("mousedown", activePickMark);
-pickXcontainer.addEventListener("mouseup", deactivatePickMark);
-pickOcontainer.addEventListener("mouseup", deactivatePickMark);
+pickXcontainer.addEventListener("mouseover", activePickMark);
+pickOcontainer.addEventListener("mouseover", activePickMark);
+pickXcontainer.addEventListener("mouseout", deactivatePickMark);
+pickOcontainer.addEventListener("mouseout", deactivatePickMark);
 
 
 function outlineMarkActive(e) {
-  const currBox = e.target;
-
+  const currBox = e.currentTarget;
   if (main.classList.contains("filter")) return;
     // if box is ready marked return
   const checkData =
     currBox.dataset.mark === "x" || currBox.dataset.mark === "o";
   if (checkData) return;
+  if(currBox.querySelector("img")) return;
+  if (gameType === "cpu" && currentPlayer !== player1) return;
+  const viewWidth = window.innerWidth;
+  const size = viewWidth < 800 ? "small" : "large";
+  currBox.classList.add(`${currentPlayer}-active-${size}`);
+}
+
+function removeMarkActive(e) {  
+  if(e.currentTarget.querySelector("img")) return;
+  const viewWidth = window.innerWidth;
+  const size = viewWidth < 800 ? "small" : "large";
+  const img = e.target.closest("div") ?? e.target;
+  img.classList.remove(`${currentPlayer}-active-${size}`);
+}
+
+function markBox(e) {
+  const currBox = e.currentTarget;
+  if (main.classList.contains("filter")) return;
+    // if box is ready marked return
+  const checkData =
+    currBox.dataset.mark === "x" || currBox.dataset.mark === "o";
+  if (checkData) return;
+  if(currBox.querySelector("img")) return;
   if (gameType === "cpu" && currentPlayer !== player1) return;
 
-  // create img 
+  // create img, size, and append
   const img = document.createElement("img");
-  img.src = `assets/icon-${currentPlayer}-outline.svg`;
   const viewWidth = window.innerWidth;
   if (viewWidth < 800) {
     img.style.width = "40px";
@@ -453,28 +425,33 @@ function outlineMarkActive(e) {
     img.style.width = "64px";
     img.style.height = "64px";
   }
+
+  img.src = `assets/icon-${currentPlayer}-marker.svg`;
   currBox.appendChild(img);
   storeData(currBox);
   const win = checkWinner();
   if (!win) checkTie();
-  // fill box if tied, solidMark() won't be called
-  if (isTied) img.src = `assets/icon-${currentPlayer}-marker.svg`
   switchPlayers();
+  checkCpuTurn();
+
 }
 
-function solidMark(e) {  
-  // if there is a winner don't fill the box
+
+gameBoardBoxes.forEach((box) => box.addEventListener("mouseover", outlineMarkActive));
+gameBoardBoxes.forEach((box) => box.addEventListener("mouseout", removeMarkActive));
+gameBoardBoxes.forEach((box) => box.addEventListener("mouseup", removeMarkActive));
+gameBoardBoxes.forEach((box) => box.addEventListener("click", markBox));
+
+function checkCpuTurn() {
+  if (gameType === "human") return;
   if (winningPlayer) return;
-  const img = e.target.querySelector("img") ?? e.target;
-  const box = img.closest("div");
-  const mark = box.dataset.mark
-  img.src = `assets/icon-${mark}-marker.svg`;
+  if (isTied) return;
+  if (gameType === "cpu" && currentPlayer !== player1) {
+    // disables click events for the boxes while cpu marks
+    gameBoardBoxes.forEach((box) => (box.style.pointerEvents = "none"));
+    setTimeout(cpuMark, 500);
+  }
 }
-
-
-gameBoardBoxes.forEach((box) => box.addEventListener("mousedown", outlineMarkActive));
-gameBoardBoxes.forEach((box) => box.addEventListener("mouseup", solidMark));
-
 
 
 // change marker sizes when window is resized
@@ -500,3 +477,6 @@ function changeMarkerSize() {
 
 
 window.addEventListener("resize", changeMarkerSize);
+
+
+

@@ -541,22 +541,26 @@ h4 {
   .cancel-btn, 
   .restart-btn,
   .round-btn,
-  .logo-game {
+  .logo-game,
+  .game-board-box {
     cursor: pointer;
   }
 
-  .btn-cpu:active , .round-btn:active, .restart-btn:active{
+  .btn-cpu:active , .round-btn:active, .restart-btn:active,
+  .btn-cpu:hover , .round-btn:hover, .restart-btn:hover{
     background: #ffc860;
 
   }
 
-  .btn-player:active {
+  .btn-player:active,
+  .btn-player:hover {
     background: #65E9E4;
 
 
   }
 
-  .reset-container:active, .quit-btn:active, .cancel-btn:active {
+  .reset-container:active, .quit-btn:active, .cancel-btn:active,
+  .reset-container:hover, .quit-btn:hover, .cancel-btn:hover {
     background: var(--light-gray);
   }
 
@@ -567,6 +571,23 @@ h4 {
   background: rgba(168, 191, 201, 0.05);
   border-radius: 10px;
 }
+
+.x-active-small::after {
+  content: url("assets/icon-x-outline-small.svg");
+} 
+
+.o-active-small::after {
+  content: url("assets/icon-o-outline-small.svg");
+
+} 
+
+.x-active-large::after {
+  content: url("assets/icon-x-outline.svg");
+}
+
+.o-active-large::after {
+  content: url("assets/icon-o-outline.svg");
+} 
 
 .hide {
   display: none;

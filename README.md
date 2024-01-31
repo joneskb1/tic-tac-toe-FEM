@@ -23,5 +23,7 @@ Users should be able to:
 - Live Site URL: https://velvety-dasik-88040e.netlify.app/ 
 
 
+![snip](https://github.com/joneskb1/tic-tac-toe-FEM/assets/74384950/cf8da83a-b4f2-4f03-8529-3105eeed5902)
 
+![Capture](https://github.com/joneskb1/tic-tac-toe-FEM/assets/74384950/e224f562-aca1-4fc1-863f-54d18fbfe0eb)
 

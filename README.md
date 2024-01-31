@@ -20,7 +20,6 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: https://github.com/joneskb1/tic-tac-toe-FEM
 - Live Site URL: https://velvety-dasik-88040e.netlify.app/ 
 
 
